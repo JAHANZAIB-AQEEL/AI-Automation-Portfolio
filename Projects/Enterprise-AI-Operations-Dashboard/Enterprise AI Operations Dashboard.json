@@ -1,0 +1,600 @@
+{
+  "name": "Enterprise AI Operations Dashboard",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "02145062-3656-4aac-a7c6-181406f0c3c4",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "79ec5353-c8c4-45e1-8dd7-408333851324",
+      "name": "Webhook",
+      "webhookId": "02145062-3656-4aac-a7c6-181406f0c3c4"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "",
+          "mode": "list",
+          "cachedResultName": "",
+          "cachedResultUrl": ""
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are a senior business consultant.\n\nAnalyze this company.\n\nCompany:\n{{$json.body.company}}\n\nIndustry:\n{{$json.body.industry}}\n\nSales:\n${{$json.body.sales}}\n\nExpenses:\n${{$json.body.expenses}}\n\nCustomers:\n{{$json.body.newCustomers}}\n\nSupport Tickets:\n{{$json.body.supportTickets}}\n\nMarketing Spend:\n${{$json.body.marketingSpend}}\n\nReturn ONLY a professional executive business overview."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "4531e885-d924-4b22-936d-d574b3a19018",
+      "name": "Business Coordinator",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "={{$('Business Coordinator').item.json.output[0].content[0].text}}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        528,
+        -208
+      ],
+      "id": "305c359b-4c15-47e3-a386-d2a8e786559e",
+      "name": "Sales AI"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "={{$('Business Coordinator').item.json.output[0].content[0].text}}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        528,
+        -16
+      ],
+      "id": "3f3416b9-f6e8-4421-bfac-a300df008b2b",
+      "name": "Marketing AI"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "={{$('Business Coordinator').item.json.output[0].content[0].text}}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        528,
+        160
+      ],
+      "id": "f263763b-3ede-4421-b219-b2367ddd7a39",
+      "name": "Finance AI"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "={{$('Business Coordinator').item.json.output[0].content[0].text}}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        544,
+        352
+      ],
+      "id": "4e43e9a3-924a-4a27-ac86-1e79a475d1ab",
+      "name": "Support AI"
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        960,
+        16
+      ],
+      "id": "3bd5bf65-8c61-4e12-b1db-b30a2db75d30",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Business Overview:\n{{$('Business Coordinator').item.json.output[0].content[0].text}}\n\nSales Report:\n{{$json.sales}}\n\nMarketing Report:\n{{$json.marketing}}\n\nFinance Report:\n{{$json.finance}}\n\nSupport Report:\n{{$json.support}}\n\nCreate one executive report."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        1456,
+        16
+      ],
+      "id": "66350aab-d92e-46c9-b9ff-b601ce7279c2",
+      "name": "Executive Summary"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1QB_1iVJklGEWfUlVPosLqeWjzLhsSMhsZsDSbNQsU8w",
+          "mode": "list",
+          "cachedResultName": "Enterprise Dashboard",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QB_1iVJklGEWfUlVPosLqeWjzLhsSMhsZsDSbNQsU8w/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QB_1iVJklGEWfUlVPosLqeWjzLhsSMhsZsDSbNQsU8w/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Company": "={{$('Webhook').item.json.body.company}}",
+            "Industry": "={{$('Webhook').item.json.body.industry}}",
+            "Month": "={{$('Webhook').item.json.body.month}}",
+            "Sales": "={{$('Webhook').item.json.body.sales}}",
+            "Expenses": "={{$('Webhook').item.json.body.expenses}}",
+            "New Customer": "={{$('Webhook').item.json.body.newCustomers}}",
+            "Support Tickets": "={{$('Webhook').item.json.body.supportTickets}}",
+            "Marketing Spend": "={{$('Webhook').item.json.body.marketingSpend}}",
+            "Date": "={{ $now.format('yyyy-MM-dd HH:mm:ss') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Month",
+              "displayName": "Month",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Sales",
+              "displayName": "Sales",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Expenses",
+              "displayName": "Expenses",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "New Customer",
+              "displayName": "New Customer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Support Tickets",
+              "displayName": "Support Tickets",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Marketing Spend",
+              "displayName": "Marketing Spend",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1728,
+        16
+      ],
+      "id": "2723c201-56f1-4639-837d-741185bd9e74",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "iji0sD48N2HV39lS",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "createFromText",
+        "content": "=Company:\n{{$('Webhook').item.json.body.company}}\n\nIndustry:\n{{$('Webhook').item.json.body.industry}}\n\nMonth:\n{{$('Webhook').item.json.body.month}}\n\n========================================\n\nEXECUTIVE BUSINESS REPORT\n\n{{$('Executive Summary').item.json.output[0].content[0].text}}\n\n========================================\n\nBusiness Overview\n\n{{$('Business Coordinator').item.json.output[0].content[0].text}}\n\n========================================\n\nSales Department\n\n{{$('Sales AI').item.json.output[0].content[0].text}}\n\n========================================\n\nMarketing Department\n\n{{$('Marketing AI').item.json.output[0].content[0].text}}\n\n========================================\n\nFinance Department\n\n{{$('Finance AI').item.json.output[0].content[0].text}}\n\n========================================\n\nCustomer Support Department\n\n{{$('Support AI').item.json.output[0].content[0].text}}\n\n========================================\n\nReport Generated Automatically\n\nEnterprise AI Operations Dashboard\n\nPowered by n8n + OpenAI",
+        "name": "=Enterprise Report - {{$('Webhook').item.json.body.company}} - {{$('Webhook').item.json.body.month}}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1936,
+        16
+      ],
+      "id": "1446f05d-3201-4a00-be4a-36e51a747e51",
+      "name": "Create file from text",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "TTrOojSxC07dmXm8",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are a professional Executive Assistant.\n\nWrite a professional email to the CEO.\n\nCEO Name:\n{{$('Webhook').item.json.body.ceoName}}\n\nCompany:\n{{$('Webhook').item.json.body.company}}\n\nMonth:\n{{$('Webhook').item.json.body.month}}\n\nThe monthly AI business analysis has been completed successfully.\n\nInform the CEO that:\n\n- The enterprise business report has been generated.\n- AI specialists analyzed sales, marketing, finance, and customer support.\n- The detailed report has been saved to Google Drive.\n- Business metrics have been archived successfully.\n- The report is ready for review.\n\nKeep the email professional and concise.\n\nEnd with:\n\nBest Regards,\nBusiness Intelligence Department\n\nReturn ONLY the email body."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        2144,
+        16
+      ],
+      "id": "46b8f5b0-18d1-4b06-b276-5e95a6963798",
+      "name": "Executive Email"
+    },
+    {
+      "parameters": {
+        "fromEmail": "from@example.com",
+        "toEmail": "info@example.com",
+        "subject": "=Enterprise Business Intelligence Report – {{$('Webhook').item.json.body.month}}",
+        "emailFormat": "text",
+        "text": "={{$('Executive Email').item.json.output[0].content[0].text}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2448,
+        16
+      ],
+      "id": "b98b03d7-ee07-44f0-8232-48b2429781cb",
+      "name": "Send an Email",
+      "webhookId": "40ea72b2-8f22-408d-bacc-91909e947bb9",
+      "credentials": {
+        "smtp": {
+          "id": "oNixi0XuuwzSgleE",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const reports = $input.all();\n\nreturn [{\n  json: {\n    sales: reports[0].json.output[0].content[0].text,\n    marketing: reports[1].json.output[0].content[0].text,\n    finance: reports[2].json.output[0].content[0].text,\n    support: reports[3].json.output[0].content[0].text\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1232,
+        16
+      ],
+      "id": "1a35f1f4-2f0d-4c9b-bb0e-ae7ef23e9424",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Business Coordinator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Business Coordinator": {
+      "main": [
+        [
+          {
+            "node": "Sales AI",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Marketing AI",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Finance AI",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Support AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Support AI": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Finance AI": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Sales AI": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marketing AI": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Executive Summary": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Create file from text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create file from text": {
+      "main": [
+        [
+          {
+            "node": "Executive Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Executive Email": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Executive Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "7608dac8-a4a0-42c8-83c3-8142d3a68fd0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d197125ec9b9e4d79e1db1057491a9e406bdee512a7662986262bf6027de4d97"
+  },
+  "nodeGroups": [],
+  "id": "IqkB2v7hQLfWopuh",
+  "tags": []
+}
