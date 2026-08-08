@@ -1,0 +1,243 @@
+{
+  "name": "AI Executive Business Reporting System",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "executive-report",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "8bbc3aa5-439c-4af0-ad46-cea5f9f91076",
+      "name": "Webhook",
+      "webhookId": "fee1a87f-41a6-4491-827c-1a2188a69d65"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are an experienced business analyst.\n\nAnalyze the following monthly business performance.\n\nCompany:\n{{$json.body.company}}\n\nMonth:\n{{$json.body.month}}\n\nSales:\n${{$json.body.sales}}\n\nExpenses:\n${{$json.body.expenses}}\n\nNew Customers:\n{{$json.body.newCustomers}}\n\nSupport Tickets:\n{{$json.body.supportTickets}}\n\nReturn ONLY valid JSON.\n\n{\n  \"performance\":\"Excellent\",\n  \"keyFindings\":\"...\",\n  \"recommendations\":\"...\",\n  \"executiveSummary\":\"...\"\n}\n\nRules:\n- Return ONLY JSON.\n- No markdown.\n- No explanations."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "b5625a59-56b6-4dd2-ae3d-98223c6abc5d",
+      "name": "Business Analyst",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "",
+          "mode": "list",
+          "cachedResultName": "",
+          "cachedResultUrl": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "",
+          "mode": "list",
+          "cachedResultName": "",
+          "cachedResultUrl": ""
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        560,
+        0
+      ],
+      "id": "43a33b5a-a771-48a0-b676-7c14beb8ca7d",
+      "name": "Append row in sheet"
+    },
+    {
+      "parameters": {
+        "operation": "createFromText",
+        "content": "=Company:\n{{$('Webhook').item.json.body.company}}\n\nMonth:\n{{$('Webhook').item.json.body.month}}\n\nPerformance:\n{{ JSON.parse($('Business Analyst').item.json.output[0].content[0].text).performance }}\n\nExecutive Summary:\n{{ JSON.parse($('Business Analyst').item.json.output[0].content[0].text).executiveSummary }}\n\nKey Findings:\n{{ JSON.parse($('Business Analyst').item.json.output[0].content[0].text).keyFindings }}\n\nRecommendations:\n{{ JSON.parse($('Business Analyst').item.json.output[0].content[0].text).recommendations }}",
+        "name": "=Executive Report - {{$('Webhook').item.json.body.month}}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "",
+          "cachedResultName": "",
+          "cachedResultUrl": ""
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "",
+          "cachedResultName": "",
+          "cachedResultUrl": ""
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        752,
+        0
+      ],
+      "id": "08ed2a69-382b-4c32-9296-daf49e6f171d",
+      "name": "Create file from text"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are a senior business consultant.\n\nWrite a professional executive email.\n\nExecutive:\n{{$('Webhook').item.json.body.executiveName}}\n\nCompany:\n{{$('Webhook').item.json.body.company}}\n\nMonth:\n{{$('Webhook').item.json.body.month}}\n\nPerformance:\n{{ JSON.parse($('Business Analyst').item.json.output[0].content[0].text).performance }}\n\nSummary:\n{{ JSON.parse($('Business Analyst').item.json.output[0].content[0].text).executiveSummary }}\n\nInstructions:\n- Inform the executive that the monthly report is ready.\n- Highlight the overall business performance.\n- Mention that the detailed report has been generated.\n- Keep the email concise and professional.\n- End with:\n\nBest Regards,\nBusiness Intelligence Team\n\nReturn ONLY the email body."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        960,
+        0
+      ],
+      "id": "3bd2eec5-8fb7-4fe4-902c-844fa9e2cbbe",
+      "name": "Executive Email",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "hello@gmail.com",
+        "toEmail": "hello@gmail.com",
+        "subject": "Monthly Executive Business Report",
+        "emailFormat": "text",
+        "text": "={{$('Executive Email').item.json.output[0].content[0].text}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1312,
+        0
+      ],
+      "id": "7eb68c62-e2f1-45f3-8834-39c7d1ad7f47",
+      "name": "Send an Email",
+      "webhookId": "42e468b7-06c9-4f2a-8cc4-70d609afdf5e",
+      "credentials": {
+        "smtp": {
+          "id": "oNixi0XuuwzSgleE",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Business Analyst",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Business Analyst": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Create file from text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create file from text": {
+      "main": [
+        [
+          {
+            "node": "Executive Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Executive Email": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "81415a35-c523-4d8a-8b39-d50c36c3ccf3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d197125ec9b9e4d79e1db1057491a9e406bdee512a7662986262bf6027de4d97"
+  },
+  "nodeGroups": [],
+  "id": "5AzCowpdiuUVdBbE",
+  "tags": []
+}
