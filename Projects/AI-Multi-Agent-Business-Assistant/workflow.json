@@ -1,0 +1,438 @@
+{
+  "name": "W3P18 - AI Multi-Agent Business Assistant",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "business-assistant",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d48ba15b-3661-4a6a-8283-30e39b7ff113",
+      "name": "Webhook",
+      "webhookId": "f00a778f-12ae-4136-b051-7e5da0d571e2"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are an experienced business consultant.\n\nAnalyze this business.\n\nBusiness:\n{{$json.body.business}}\n\nIndustry:\n{{$json.body.industry}}\n\nChallenge:\n{{$json.body.challenge}}\n\nReturn ONLY a short business overview."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "b202a5f7-2c1a-4347-ac3d-4816c0777854",
+      "name": "Business Coordinator",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are an AI Sales Consultant.\n\nBusiness Overview:\n\n{{$('Business Coordinator').item.json.output[0].content[0].text}}\n\nProvide 5 practical sales improvement recommendations.\n\nReturn only the recommendations."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        560,
+        0
+      ],
+      "id": "158b5b74-c3e1-4407-bc92-84a9b7f102f7",
+      "name": "Sales Agent",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are an AI Customer Support Consultant.\n\nBusiness Overview:\n\n{{$('Business Coordinator').item.json.output[0].content[0].text}}\n\nProvide 5 customer support improvement recommendations.\n\nReturn only the recommendations."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        912,
+        0
+      ],
+      "id": "e7762fd6-9f34-4d06-81d9-6cf764de4a96",
+      "name": "Support Agent",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are an AI Marketing Consultant.\n\nBusiness Overview:\n\n{{$('Business Coordinator').item.json.output[0].content[0].text}}\n\nProvide 5 marketing improvement recommendations.\n\nReturn only the recommendations."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        1264,
+        0
+      ],
+      "id": "51092d86-6be6-45f3-bf4c-a8ce18673565",
+      "name": "Marketing Agent",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1A_OS5KskJwcKqYfi3Pwm1lghmGX6rIAPs0R71PG9AKI",
+          "mode": "list",
+          "cachedResultName": "Business Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1A_OS5KskJwcKqYfi3Pwm1lghmGX6rIAPs0R71PG9AKI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1A_OS5KskJwcKqYfi3Pwm1lghmGX6rIAPs0R71PG9AKI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Business": "={{$('Webhook').item.json.body.business}}",
+            "Industry": "={{$('Webhook').item.json.body.industry}}",
+            "Challenge": "={{$('Webhook').item.json.body.challenge}}",
+            "Date": "={{ $now.format('yyyy-MM-dd HH:mm:ss') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Business",
+              "displayName": "Business",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Challenge",
+              "displayName": "Challenge",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1616,
+        0
+      ],
+      "id": "1891d489-67e3-45fc-9c11-1aa4547b7013",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "iji0sD48N2HV39lS",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "createFromText",
+        "content": "=Business Overview\n\n{{$('Business Coordinator').item.json.output[0].content[0].text}}\n\n--------------------------------\n\nSales Recommendations\n\n{{$('Sales Agent').item.json.output[0].content[0].text}}\n\n--------------------------------\n\nSupport Recommendations\n\n{{$('Support Agent').item.json.output[0].content[0].text}}\n\n--------------------------------\n\nMarketing Recommendations\n\n{{$('Marketing Agent').item.json.output[0].content[0].text}}",
+        "name": "=Business Report - {{$('Webhook').item.json.body.business}}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1824,
+        0
+      ],
+      "id": "f2a6b3d5-4622-46e8-87cd-c1fda02ca4a4",
+      "name": "Create file from text",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "TTrOojSxC07dmXm8",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are a senior business consultant.\n\nWrite a professional email to:\n\n{{$('Webhook').item.json.body.ownerName}}\n\nExplain that the business analysis has been completed.\n\nMention that:\n\n- Sales recommendations were generated.\n- Customer support recommendations were generated.\n- Marketing recommendations were generated.\n- A detailed report has been created.\n\nKeep the email concise and professional.\n\nEnd with:\n\nBest Regards,\nBusiness Intelligence Team\n\nReturn ONLY the email body."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        2032,
+        0
+      ],
+      "id": "fccfa439-4cca-4c6d-aac3-658918ffd969",
+      "name": "Executive Email",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "jahanzaibaqeel6@gmail.com",
+        "toEmail": "jahanzaibaqeel6@gmail.com",
+        "subject": "Your AI Business Analysis Report is Ready",
+        "emailFormat": "text",
+        "text": "={{$('Executive Email').item.json.output[0].content[0].text}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2352,
+        0
+      ],
+      "id": "7fbe090c-9f4f-4eb6-8c16-21776d0a9f25",
+      "name": "Send an Email",
+      "webhookId": "d1f9e770-ff3e-4fa3-bbdb-d7fc5ec89d7c",
+      "credentials": {
+        "smtp": {
+          "id": "oNixi0XuuwzSgleE",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Business Coordinator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Business Coordinator": {
+      "main": [
+        [
+          {
+            "node": "Sales Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sales Agent": {
+      "main": [
+        [
+          {
+            "node": "Support Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Support Agent": {
+      "main": [
+        [
+          {
+            "node": "Marketing Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marketing Agent": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Create file from text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create file from text": {
+      "main": [
+        [
+          {
+            "node": "Executive Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Executive Email": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "3d98a343-54d4-4dd8-913d-fe176d7f3ea0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d197125ec9b9e4d79e1db1057491a9e406bdee512a7662986262bf6027de4d97"
+  },
+  "nodeGroups": [],
+  "id": "nlXKmOntHm0mx5lM",
+  "tags": []
+}
