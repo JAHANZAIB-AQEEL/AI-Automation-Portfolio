@@ -1,0 +1,343 @@
+{
+  "name": "AI Social Media Content Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "social-content",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "aa602860-c844-4acc-9a85-579eb2685cd3",
+      "name": "Webhook",
+      "webhookId": "36b5c6a4-07a1-4463-8d22-65369c951117"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1naYAPKEIXSorsjh-Ks-Kzo8JF3xTOR3TszI3D4aCjUE",
+          "mode": "list",
+          "cachedResultName": "Content Calendar",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1naYAPKEIXSorsjh-Ks-Kzo8JF3xTOR3TszI3D4aCjUE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1192614990,
+          "mode": "list",
+          "cachedResultName": "1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1naYAPKEIXSorsjh-Ks-Kzo8JF3xTOR3TszI3D4aCjUE/edit#gid=1192614990"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Client": "={{$('Webhook').item.json.body.clientName}}",
+            "Business": "={{$('Webhook').item.json.body.business}}",
+            "Platform": "={{$('Webhook').item.json.body.platform}}",
+            "Headline": "={{ JSON.parse($('Content Generator').item.json.output[0].content[0].text).headline }}",
+            "Caption": "={{ JSON.parse($('Content Generator').item.json.output[0].content[0].text).caption }}",
+            "Hashtag": "={{ JSON.parse($('Content Generator').item.json.output[0].content[0].text).hashtags }}",
+            "CTA": "={{ JSON.parse($('Content Generator').item.json.output[0].content[0].text).callToAction }}",
+            "Data": "={{ $now.format('yyyy-MM-dd HH:mm:ss') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Client",
+              "displayName": "Client",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Business",
+              "displayName": "Business",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Platform",
+              "displayName": "Platform",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Headline",
+              "displayName": "Headline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Caption",
+              "displayName": "Caption",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Hashtag",
+              "displayName": "Hashtag",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CTA",
+              "displayName": "CTA",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Data",
+              "displayName": "Data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        560,
+        0
+      ],
+      "id": "838b093a-a7ad-4dab-b541-298c58d17ccd",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "iji0sD48N2HV39lS",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are a professional social media strategist.\n\nGenerate social media content.\n\nBusiness:\n{{$json.body.business}}\n\nIndustry:\n{{$json.body.industry}}\n\nPlatform:\n{{$json.body.platform}}\n\nCampaign Goal:\n{{$json.body.goal}}\n\nReturn ONLY valid JSON.\n\n{\n  \"headline\":\"...\",\n  \"caption\":\"...\",\n  \"hashtags\":\"...\",\n  \"callToAction\":\"...\"\n}\n\nRules:\n- Return ONLY JSON.\n- No markdown.\n- No explanations."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "fc5a092b-ba62-4775-b2d0-97b39dcd1c04",
+      "name": "Content Generator",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "createFromText",
+        "content": "=Headline:\n{{ JSON.parse($('Content Generator').item.json.output[0].content[0].text).headline }}\n\nCaption:\n{{ JSON.parse($('Content Generator').item.json.output[0].content[0].text).caption }}\n\nHashtags:\n{{ JSON.parse($('Content Generator').item.json.output[0].content[0].text).hashtags }}\n\nCall To Action:\n{{ JSON.parse($('Content Generator').item.json.output[0].content[0].text).callToAction }}",
+        "name": "={{$('Webhook').item.json.body.business}} - Social Content",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        768,
+        0
+      ],
+      "id": "cad7f3ad-2c3c-456b-8054-0330b29d22cf",
+      "name": "Create file from text",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "TTrOojSxC07dmXm8",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "jahanzaibaqeel6@gmail.com",
+        "toEmail": "jahanzaibaqeel6@gmail.com",
+        "subject": "Your Social Media Content is Ready!",
+        "emailFormat": "text",
+        "text": "={{$('Content Email').item.json.output[0].content[0].text}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1328,
+        0
+      ],
+      "id": "684200f0-a383-467e-8363-5e46cc26bb82",
+      "name": "Send an Email",
+      "webhookId": "9c19d966-65be-416e-a264-5be146620d17",
+      "credentials": {
+        "smtp": {
+          "id": "oNixi0XuuwzSgleE",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are a professional marketing consultant.\n\nWrite a friendly email.\n\nClient:\n{{$('Webhook').item.json.body.clientName}}\n\nBusiness:\n{{$('Webhook').item.json.body.business}}\n\nPlatform:\n{{$('Webhook').item.json.body.platform}}\n\nTell the client:\n- Their content has been prepared.\n- A content document has been saved.\n- They can review and publish it.\n- Thank them for choosing your marketing service.\n\nEnd with:\n\nBest Regards,\nMarketing Team\n\nReturn ONLY the email body."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        976,
+        0
+      ],
+      "id": "21004226-68a1-4c90-a4b9-259cbb57ee97",
+      "name": "Content Email",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Content Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Content Generator": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Create file from text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create file from text": {
+      "main": [
+        [
+          {
+            "node": "Content Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Content Email": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "f8283f35-186f-4856-83f5-88435ac30fa9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d197125ec9b9e4d79e1db1057491a9e406bdee512a7662986262bf6027de4d97"
+  },
+  "nodeGroups": [],
+  "id": "lwUEpaQp3dyBw2PV",
+  "tags": []
+}
