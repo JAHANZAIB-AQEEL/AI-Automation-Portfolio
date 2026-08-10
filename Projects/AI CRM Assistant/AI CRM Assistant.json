@@ -1,0 +1,178 @@
+{
+  "name": "AI CRM Assistant",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d692d40e-bb92-43fd-b081-d478b59900c3",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5856eac3-43ce-46d3-825f-3c5ac325065f",
+              "name": "customerName",
+              "value": "ahmed khan",
+              "type": "string"
+            },
+            {
+              "id": "be13a7dc-2d31-470f-968c-bc42c3c365e4",
+              "name": "email",
+              "value": "ahmed@example.com",
+              "type": "string"
+            },
+            {
+              "id": "a5ce0ca1-b98a-4463-b04a-cc499801367a",
+              "name": "company",
+              "value": "ahmed clothing store",
+              "type": "string"
+            },
+            {
+              "id": "d7e0e294-1657-4907-a684-efc781da0660",
+              "name": "businesstype",
+              "value": "clothing store",
+              "type": "string"
+            },
+            {
+              "id": "86cf44cc-ddfe-4f91-a9ef-e7c8148be358",
+              "name": "budget",
+              "value": 150000,
+              "type": "number"
+            },
+            {
+              "id": "ec69f080-9824-4435-9f35-4db5e4c825bb",
+              "name": "lastconversation",
+              "value": "Interested in AI chatbot, WhatsApp automation, CRM integration, and email automation. Wants pricing and implementation timeline.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "44b26f14-f344-408c-9eac-f1487617f26f",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are an experienced CRM assistant.\n\nAnalyze this customer.\n\nCustomer Name:\n{{$json.customerName}}\n\nCompany:\n{{$json.company}}\n\nBusiness Type:\n{{$json.businesstype}}\n\nBudget:\n{{$json.budget}}\n\nLast Conversation:\n{{$json.lastconversation}}\n\nCreate a CRM report with these sections:\n\n--------------------------------\n\nCustomer Summary\n\nBuying Intent\n\nPriority\n(High / Medium / Low)\n\nRecommended Next Action\n\nSuggested Follow-up Message\n\nPotential Revenue\n\n--------------------------------\n\nBe professional.\n\nReturn ONLY the CRM report."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        16
+      ],
+      "id": "b7b36df9-4749-466d-86d9-da3de2a17cf0",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "jahanzaibaqeel6@gmail.com",
+        "toEmail": "jahanzaibaqeel6@gmail.com",
+        "subject": "=CRM Report - {{$('Edit Fields').item.json.customerName}}",
+        "emailFormat": "text",
+        "text": "={{$('Message a model').item.json.output[0].content[0].text}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        768,
+        16
+      ],
+      "id": "dc7f7983-5f81-44d0-a2dd-5bdc8135da26",
+      "name": "Send an Email",
+      "webhookId": "3f60c43c-fb40-4d69-9aef-b9d0e0b39176",
+      "credentials": {
+        "smtp": {
+          "id": "oNixi0XuuwzSgleE",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "ba6c23b0-9c0a-47e9-89a4-dd7625a23235",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d197125ec9b9e4d79e1db1057491a9e406bdee512a7662986262bf6027de4d97"
+  },
+  "nodeGroups": [],
+  "id": "LsB1cHHMBX6VC7ez",
+  "tags": []
+}

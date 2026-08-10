@@ -1,0 +1,166 @@
+{
+  "name": "AI Customer Support Ticket Classifier",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a75f76c3-ea73-4738-9146-23843b3ea9f9",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "14b63be7-a977-469e-939a-c0ba7b6590a4",
+              "name": "customerName",
+              "value": "sara khan",
+              "type": "string"
+            },
+            {
+              "id": "aa30e4a7-1c87-46ce-906b-91938dcf56db",
+              "name": "email",
+              "value": "sara@example.com",
+              "type": "string"
+            },
+            {
+              "id": "77c37966-7d98-436c-b0c1-e164c98019b6",
+              "name": "orderNumber",
+              "value": "ORD-2045",
+              "type": "string"
+            },
+            {
+              "id": "534fd910-c6a9-4fbf-beac-8f5aa81a9323",
+              "name": "ticket",
+              "value": "I received the wrong product. The size is incorrect and I'd like a replacement as soon as possible.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "fcb7cb84-dfb9-4620-a2d9-fbbcb6df1377",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are an AI customer support manager.\n\nAnalyze the following customer support ticket.\n\nCustomer Name:\n{{$json.customerName}}\n\nOrder Number:\n{{$json.orderNumber}}\n\nCustomer Email\n{{$json.email}}\n\nSupport Ticket:\n{{$json.ticket}}\n\nCreate a support report with these sections:\n\n--------------------------------\n\nCustomer Summary\n\nCategory\n(Technical / Billing / Shipping / Product Issue / Refund / General Inquiry)\n\nPriority\n(High / Medium / Low)\n\nRecommended Department\n\nSuggested Response\n\nRecommended Next Action\n\n--------------------------------\n\nReturn ONLY the report."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "77922a8f-c481-4bf9-b763-425d3c4895ad",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "jahanzaibaqeel6@gmail.com",
+        "toEmail": "jahanzaibaqeel6@gmail.com",
+        "subject": "=Support Ticket Analysis - {{$('Edit Fields').item.json.orderNumber}}",
+        "emailFormat": "text",
+        "text": "={{$('Message a model').item.json.output[0].content[0].text}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        768,
+        0
+      ],
+      "id": "1ca80a44-7993-4bd3-ab88-d08f3a2a7a41",
+      "name": "Send an Email",
+      "webhookId": "5ee26bab-487e-4e23-87f4-30a97ece981f",
+      "credentials": {
+        "smtp": {
+          "id": "oNixi0XuuwzSgleE",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "962f624b-1a6f-4c94-bb5a-b7aba5773fb4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d197125ec9b9e4d79e1db1057491a9e406bdee512a7662986262bf6027de4d97"
+  },
+  "nodeGroups": [],
+  "id": "EAl4C5fAwKL20Iye",
+  "tags": []
+}

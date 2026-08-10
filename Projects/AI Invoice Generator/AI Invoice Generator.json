@@ -1,0 +1,178 @@
+{
+  "name": "AI Invoice Generator",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "8bcc4a02-17b1-47ce-86fa-f8404f056dd7",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1e99eb95-57b6-45bb-8783-52950ce00423",
+              "name": "customerName",
+              "value": "Ali Khan",
+              "type": "string"
+            },
+            {
+              "id": "67f57486-7427-4c52-8551-98589e9e552a",
+              "name": "email",
+              "value": "ali@example.com",
+              "type": "string"
+            },
+            {
+              "id": "4433eba2-fcbd-4016-a67e-ae871a316ee3",
+              "name": "company",
+              "value": "Ali clothing store",
+              "type": "string"
+            },
+            {
+              "id": "ea0aa1d4-70f7-430c-9a3d-28e820e6051a",
+              "name": "service",
+              "value": "AI chatbot devlopment",
+              "type": "string"
+            },
+            {
+              "id": "6e0abdc0-39d5-4d3d-92f3-8ef9d4a935ef",
+              "name": "amount",
+              "value": 75000,
+              "type": "number"
+            },
+            {
+              "id": "74d6059d-498d-4c96-bc18-5f7f5c1fe1bf",
+              "name": "duedate",
+              "value": "15 August 2026",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "06fdaf15-5bb1-464b-8f70-d400038a74d1",
+      "name": "Invoice details"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are a professional invoice generator.\n\nGenerate a clean and professional invoice using the following information.\n\nCustomer Name:\n{{$json[\"customerName\"]}}\n\nCompany:\n{{$json[\"company\"]}}\n\nService:\n{{$json[\"service\"]}}\n\nAmount:\n{{$json[\"amount\"]}}\n\nDue Date:\n{{$json[\"duedate\"]}}\n\nFormat the invoice like this:\n\n------------------------------\nINVOICE\n------------------------------\n\nInvoice Number:\nGenerate a random invoice number.\n\nDate:\nUse today's date.\n\nBill To:\nCustomer Name\n\nCompany:\nCompany Name\n\nService:\nService Name\n\nAmount:\nAmount\n\nDue Date:\nDue Date\n\nPayment Terms:\nPayment due before the due date.\n\nThank the customer for choosing our services.\n\nEnd with:\n\nBest Regards,\nAI Automation Team\n\nReturn ONLY the invoice. "
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "a2f59689-8637-4d01-a99f-756ab34374e0",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "jahanzaibaqeel6@gmail.com",
+        "toEmail": "jahanzaibaqeel6@gmail.com",
+        "subject": "=Invoice for {{$('Invoice details').item.json.company}}",
+        "emailFormat": "text",
+        "text": "={{$('Message a model').item.json.output[0].content[0].text}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        768,
+        0
+      ],
+      "id": "bdd01a7a-73c5-4efd-b3e4-35f19fe41084",
+      "name": "Send an Email",
+      "webhookId": "6ec71c81-b4d4-4525-b2b6-fe8089e6b73a",
+      "credentials": {
+        "smtp": {
+          "id": "oNixi0XuuwzSgleE",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Invoice details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Invoice details": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "362bb171-57c7-4bd7-8beb-e6cd433c9aba",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d197125ec9b9e4d79e1db1057491a9e406bdee512a7662986262bf6027de4d97"
+  },
+  "nodeGroups": [],
+  "id": "yhhtaq08g3hCCdMj",
+  "tags": []
+}

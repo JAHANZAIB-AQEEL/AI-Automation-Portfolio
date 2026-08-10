@@ -1,0 +1,166 @@
+{
+  "name": "AI Proposal Generator",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "390ac32d-143e-45ea-96f3-39092505365e",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "91829b58-8155-42cb-ac7d-51a8daf7c09f",
+              "name": "customerName",
+              "value": "Ali Ahmed",
+              "type": "string"
+            },
+            {
+              "id": "5125a8ff-f741-4c5c-8299-5ba863a80f20",
+              "name": "business",
+              "value": "Ali Clothing Store",
+              "type": "string"
+            },
+            {
+              "id": "27307cc1-0558-4698-b90a-2c13df9f4316",
+              "name": "budget",
+              "value": 25000,
+              "type": "number"
+            },
+            {
+              "id": "67821aef-8d7e-496f-983d-3473bf3f1601",
+              "name": "projectRequirment",
+              "value": "I need an AI chatbot, WhatsApp automation, CRM integration, email automation, and customer support system.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "21fe190f-644b-469d-ae77-eea6a5a2cba3",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are a professional business proposal writer.\n\nCreate a professional project proposal based on the following customer information.\n\nCustomer Name:\n{{$json[\"customerName\"]}}\n\nBusiness:\n{{$json[\"business\"]}}\n\nBudget:\n{{$json[\"budget\"]}}\n\nProject Requirements:\n{{$json[\"projectRequirment\"]}}\n\nWrite the proposal using the following format:\n\n# Project Proposal\n\nDear {{$json[\"customerName\"]}},\n\nThank you for your interest in our services.\n\n## Project Overview\nBriefly explain the customer's project in a professional way.\n\n## Proposed Solution\nExplain how we will solve the customer's problem.\n\n## Estimated Timeline\nProvide an estimated timeline based on the project requirements.\n\n## Estimated Budget\nMention that the estimated budget is approximately {{$json[\"budget\"]}} and the final quotation will be confirmed after a detailed discussion.\n\n## Deliverables\nList 5 deliverables related to the project.\n\n## Next Steps\nInvite the customer to schedule a meeting to discuss the project.\n\nEnd the proposal with:\n\nBest Regards,\nAI Automation Team\n\nReturn only the proposal without any extra explanations."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "54856163-b08a-41c5-966a-682c59588dca",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "jahanzaibaqeel6@gmail.com",
+        "toEmail": "jahanzaibaqeel6@gmail.com",
+        "subject": "=Project Proposal for {{$('Edit Fields').item.json.business}}",
+        "emailFormat": "text",
+        "text": "={{$('Message a model').item.json.output[0].content[0].text}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        768,
+        0
+      ],
+      "id": "14b5eca1-1cb0-4c3c-8a30-2681cffb8e72",
+      "name": "Send an Email",
+      "webhookId": "a051c741-45d9-4deb-9408-89a154fea428",
+      "credentials": {
+        "smtp": {
+          "id": "oNixi0XuuwzSgleE",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "f66fb67f-c3af-49a7-a366-f6ac73e9bc63",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d197125ec9b9e4d79e1db1057491a9e406bdee512a7662986262bf6027de4d97"
+  },
+  "nodeGroups": [],
+  "id": "hhWPKy5pvHI7sK4W",
+  "tags": []
+}

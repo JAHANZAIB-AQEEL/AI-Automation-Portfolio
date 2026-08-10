@@ -1,0 +1,119 @@
+{
+  "name": "AI Website Contact Form Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "contact-form",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2f0e6363-8046-4f0e-8f29-07f155db6c6e",
+      "name": "Webhook",
+      "webhookId": "7886f139-7684-4e57-8ecd-92d435454a9e"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are an AI business assistant.\n\nA customer has submitted a website contact form.\n\nCustomer Name:\n{{$json.body.customerName}}\n\nBusiness:\n{{$json.body.business}}\n\nCustomer Email:\n{{$json.body.customerEmail}}\n\nInquiry:\n{{$json.body.inquiry}}\n\nWrite a professional reply.\n\nInclude:\n\n• Thank the customer.\n• Summarize their inquiry.\n• Explain how AI can help.\n• Invite them to schedule a meeting.\n• End professionally.\n\nReturn ONLY the email."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "756631bd-fce2-4d48-9377-0689c740cc65",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "jahanzaibaqeel6@gmail.com",
+        "toEmail": "jahanzaibaqeel6@gmail.com",
+        "subject": "=Website Inquiry - {{$('Webhook').item.json.body.business}}",
+        "emailFormat": "text",
+        "text": "={{$('Message a model').item.json.output[0].content[0].text}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        560,
+        0
+      ],
+      "id": "f0648f07-eb23-4942-84e6-f43adce0322b",
+      "name": "Send an Email",
+      "webhookId": "429dc8f9-21da-41d3-a1ac-54bee8d1562f",
+      "credentials": {
+        "smtp": {
+          "id": "oNixi0XuuwzSgleE",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "2b26fe33-2c7d-436b-8615-92069f0e54a3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d197125ec9b9e4d79e1db1057491a9e406bdee512a7662986262bf6027de4d97"
+  },
+  "nodeGroups": [],
+  "id": "YRgGwUJYrt6Ftesw",
+  "tags": []
+}

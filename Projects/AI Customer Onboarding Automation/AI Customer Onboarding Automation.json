@@ -1,0 +1,353 @@
+{
+  "name": "AI Customer Onboarding Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "customer-onboarding",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "00d00613-dd8e-4e2c-8d76-f395d4c4f0ce",
+      "name": "Webhook",
+      "webhookId": "c2ed95fb-b514-4680-8e49-7fa7502361c5"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1QSQtkW_fan4gls3u9lqrWCAdruN-Gq-JJODGrv-9weY",
+          "mode": "list",
+          "cachedResultName": "Customer Onboarding",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QSQtkW_fan4gls3u9lqrWCAdruN-Gq-JJODGrv-9weY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QSQtkW_fan4gls3u9lqrWCAdruN-Gq-JJODGrv-9weY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Customer": "={{$('Webhook').item.json.body.customerName}}",
+            "Email": "={{$('Webhook').item.json.body.customerEmail}}",
+            "Comapany": "={{$('Webhook').item.json.body.company}}",
+            "Industry ": "={{$('Webhook').item.json.body.industry}}",
+            "Service": "={{$('Webhook').item.json.body.service}}",
+            "Customer Type": "={{ JSON.parse($('Customer Analysis').item.json.output[0].content[0].text).customerType }}",
+            "Priority": "={{ JSON.parse($('Customer Analysis').item.json.output[0].content[0].text).priority }}",
+            "Summary": "={{ JSON.parse($('Customer Analysis').item.json.output[0].content[0].text).summary }}",
+            "Date": "={{ $now.format('yyyy-MM-dd HH:mm:ss') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Customer",
+              "displayName": "Customer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Comapany",
+              "displayName": "Comapany",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Industry ",
+              "displayName": "Industry ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Service",
+              "displayName": "Service",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Customer Type",
+              "displayName": "Customer Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Priority",
+              "displayName": "Priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Summary",
+              "displayName": "Summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        560,
+        0
+      ],
+      "id": "2ee13fb9-52b8-4c63-ad14-d797456e8d8a",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "iji0sD48N2HV39lS",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are a customer success manager.\n\nAnalyze the new customer information.\n\nCustomer:\n{{$json.body.customerName}}\n\nCompany:\n{{$json.body.company}}\n\nIndustry:\n{{$json.body.industry}}\n\nService Purchased:\n{{$json.body.service}}\n\nReturn ONLY valid JSON.\n\n{\n  \"customerType\":\"Business\",\n  \"priority\":\"High\",\n  \"summary\":\"Professional software company onboarding for AI automation.\"\n}\n\nRules:\n- Return ONLY JSON.\n- No markdown.\n- No explanations."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "ab2f30ab-9905-4c5e-beae-e75a1f561775",
+      "name": "Customer Analysis",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "createFromText",
+        "content": "=Welcome to our AI Automation Service!\n\nCustomer:\n{{$('Webhook').item.json.body.customerName}}\n\nCompany:\n{{$('Webhook').item.json.body.company}}\n\nService:\n{{$('Webhook').item.json.body.service}}\n\nAI Summary:\n{{ JSON.parse($('Customer Analysis').item.json.output[0].content[0].text).summary }}\n\nThank you for choosing our services. We look forward to working with you.",
+        "name": "=Welcome Guide - {{$('Webhook').item.json.body.company}}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        768,
+        0
+      ],
+      "id": "ac42b62a-d1a1-4845-8ecb-a04be290dada",
+      "name": "Create file from text",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "TTrOojSxC07dmXm8",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "jahanzaibaqeel6@gmail.com",
+        "toEmail": "jahanzaibaqeel6@gmail.com",
+        "subject": "Welcome to Our AI Automation Service!",
+        "emailFormat": "text",
+        "text": "={{$('Welcome Email').item.json.output[0].content[0].text}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1328,
+        0
+      ],
+      "id": "6d042b01-c804-47d8-9d8f-558aae4325fb",
+      "name": "Send an Email",
+      "webhookId": "c282e934-c61d-4b4c-8bb0-a58d8b399221",
+      "credentials": {
+        "smtp": {
+          "id": "oNixi0XuuwzSgleE",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are a professional Customer Success Manager.\n\nWrite a personalized welcome email.\n\nCustomer:\n{{$('Webhook').item.json.body.customerName}}\n\nCompany:\n{{$('Webhook').item.json.body.company}}\n\nService:\n{{$('Webhook').item.json.body.service}}\n\nAI Summary:\n{{ JSON.parse($('Customer Analysis').item.json.output[0].content[0].text).summary }}\n\nInstructions:\n- Welcome the customer.\n- Thank them for choosing the service.\n- Briefly explain the onboarding process.\n- Mention that a welcome guide has been prepared.\n- Encourage them to contact the support team with any questions.\n- End with:\n\nBest Regards,\nCustomer Success Team\n\nReturn ONLY the email body."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        976,
+        0
+      ],
+      "id": "fb0acfdb-6c29-44da-bbc2-cd69ce1644e9",
+      "name": "Welcome Email",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Customer Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Customer Analysis": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Create file from text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create file from text": {
+      "main": [
+        [
+          {
+            "node": "Welcome Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Welcome Email": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "7218bb57-16f4-4d06-8094-5c4619db8a7e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d197125ec9b9e4d79e1db1057491a9e406bdee512a7662986262bf6027de4d97"
+  },
+  "nodeGroups": [],
+  "id": "UnEnDRB553LZ7mAV",
+  "tags": []
+}

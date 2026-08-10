@@ -1,0 +1,164 @@
+{
+  "name": "AI Meeting Minutes Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "meeting-minutes",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c91863a9-cfe9-4739-861e-315a4aa9a7de",
+      "name": "Webhook",
+      "webhookId": "1dd5b485-4d62-4626-a28f-e4198d41d755"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are an expert meeting assistant.\n\nAnalyze the meeting transcript.\n\nMeeting Title:\n{{$json.body.meetingTitle}}\n\nTranscript:\n{{$json.body.transcript}}\n\nCreate:\n\n1. Meeting Summary\n\n2. Key Decisions\n\n3. Action Items\n\nReturn the result in professional business format."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "bd60aa10-6a1e-453a-9569-6a097f775150",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "createFromText",
+        "content": "={{$('Message a model').item.json.output[0].content[0].text}}",
+        "name": "=Meeting Minutes - {{$('Webhook').item.json.body.meetingTitle}}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "root",
+          "mode": "list",
+          "cachedResultName": "/ (Root folder)",
+          "cachedResultUrl": "https://drive.google.com/drive"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        560,
+        0
+      ],
+      "id": "eb3813d8-9620-4a2c-95f4-2d7d0bfe3873",
+      "name": "Create file from text",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "TTrOojSxC07dmXm8",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "jahanzaibaqeel6@gmail.com",
+        "toEmail": "jahanzaibaqeel6@gmail.com",
+        "subject": "Meeting Minutes Ready",
+        "emailFormat": "text",
+        "text": "=Hello {{$('Webhook').item.json.body.organizerName}},\n\nYour meeting minutes have been successfully generated.\n\nMeeting Title:\n{{$('Webhook').item.json.body.meetingTitle}}\n\nThe meeting summary and action items have been generated and saved to your Google Drive.\n\nThank you.\n\nBest Regards,\nAI Meeting Assistant",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        768,
+        0
+      ],
+      "id": "2585824c-cfe1-44fe-8005-d28c6ecdb26f",
+      "name": "Send an Email",
+      "webhookId": "b722c4b5-2e1c-44b7-9bbd-d8c9c2e714dd",
+      "credentials": {
+        "smtp": {
+          "id": "oNixi0XuuwzSgleE",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Create file from text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create file from text": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "a7aa70ef-464f-4f01-b3cb-6201c172d149",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d197125ec9b9e4d79e1db1057491a9e406bdee512a7662986262bf6027de4d97"
+  },
+  "nodeGroups": [],
+  "id": "LG70d0CcUFnzNuUY",
+  "tags": []
+}

@@ -1,0 +1,556 @@
+{
+  "name": "AI Resume Screening System",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "resume-screening",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "0b24e11a-a3ab-4dcc-b779-2df5bd8b90b1",
+      "name": "Webhook",
+      "webhookId": "e707940c-48f1-4478-b2d8-3c7e61e5b8c5"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are an experienced HR recruiter.\n\nEvaluate this job candidate.\n\nCandidate Name:\n{{$json.body.candidateName}}\n\nPosition:\n{{$json.body.position}}\n\nExperience:\n{{$json.body.experience}}\n\nReturn ONLY valid JSON.\n\n{\n  \"score\": 85,\n  \"decision\": \"Accepted\",\n  \"summary\": \"Candidate has strong professional experience.\"\n}\n\nRules:\n- Score must be between 0 and 100.\n- Decision must ONLY be \"Accepted\" or \"Rejected\".\n- Return ONLY JSON.\n- No markdown.\n- No explanations."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "df890792-a6a0-4de7-baa6-6a1730b184f7",
+      "name": "Resume Analysis",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f774c0d5-adf1-4c8d-8843-11ec3f7a19b6",
+              "leftValue": "={{ JSON.parse($json.output[0].content[0].text).decision }}",
+              "rightValue": "Accepted",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        560,
+        0
+      ],
+      "id": "88aaa3e9-3692-49bc-9203-bde542ecf1db",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1jJWpEThPmUEjWI18KuHOzdaZ6T6SOYiU0kKpn-caYg4",
+          "mode": "list",
+          "cachedResultName": "Job Applicants",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jJWpEThPmUEjWI18KuHOzdaZ6T6SOYiU0kKpn-caYg4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jJWpEThPmUEjWI18KuHOzdaZ6T6SOYiU0kKpn-caYg4/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{$('Webhook').item.json.body.candidateName}}",
+            "Email": "={{$('Webhook').item.json.body.candidateEmail}}",
+            "Position": "={{$('Webhook').item.json.body.position}}",
+            "Experience": "={{$('Webhook').item.json.body.experience}}",
+            "Score": "=92",
+            "Decision ": "={{ JSON.parse($('Resume Analysis').item.json.output[0].content[0].text).decision }}",
+            "Summary": "={{ JSON.parse($('Resume Analysis').item.json.output[0].content[0].text).summary }}",
+            "Date": "={{ $now.format('yyyy-MM-dd HH:mm:ss') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Position",
+              "displayName": "Position",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Experience",
+              "displayName": "Experience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Decision ",
+              "displayName": "Decision ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Summary",
+              "displayName": "Summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        768,
+        -96
+      ],
+      "id": "50b9f0ca-c6bd-4c54-84c8-d0e68d996de2",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "iji0sD48N2HV39lS",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1jJWpEThPmUEjWI18KuHOzdaZ6T6SOYiU0kKpn-caYg4",
+          "mode": "list",
+          "cachedResultName": "Job Applicants",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jJWpEThPmUEjWI18KuHOzdaZ6T6SOYiU0kKpn-caYg4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jJWpEThPmUEjWI18KuHOzdaZ6T6SOYiU0kKpn-caYg4/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{$('Webhook').item.json.body.candidateName}}",
+            "Email": "={{$('Webhook').item.json.body.candidateEmail}}",
+            "Position": "={{$('Webhook').item.json.body.position}}",
+            "Experience": "={{$('Webhook').item.json.body.experience}}",
+            "Score": "45",
+            "Decision ": "={{ JSON.parse($('Resume Analysis').item.json.output[0].content[0].text).decision }}",
+            "Summary": "={{ JSON.parse($('Resume Analysis').item.json.output[0].content[0].text).summary }}",
+            "Date": "={{ $now.format('yyyy-MM-dd HH:mm:ss') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Position",
+              "displayName": "Position",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Experience",
+              "displayName": "Experience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Decision ",
+              "displayName": "Decision ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Summary",
+              "displayName": "Summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        768,
+        96
+      ],
+      "id": "8ff40ee1-3bc5-4470-a2c9-f09097d4a328",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "iji0sD48N2HV39lS",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "jahanzaibaqeel6@gmail.com",
+        "toEmail": "jahanzaibaqeel6@gmail.com",
+        "subject": "Application Status – Congratulations!",
+        "emailFormat": "text",
+        "text": "={{$('accpeted').item.json.output[0].content[0].text}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1328,
+        -96
+      ],
+      "id": "ecb613ce-a16f-47c8-82fe-9ea7ea1b1548",
+      "name": "Send an Email",
+      "webhookId": "a96a376d-cf6a-494f-816a-be9a8a4b76bc",
+      "credentials": {
+        "smtp": {
+          "id": "oNixi0XuuwzSgleE",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "jahanzaibaqeel6@gmail.com",
+        "toEmail": "jahanzaibaqeel6@gmail.com",
+        "subject": "Application Status – Thank You for Applying",
+        "emailFormat": "text",
+        "text": "={{$('rejected').item.json.output[0].content[0].text}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1328,
+        96
+      ],
+      "id": "5deea1f8-b583-44a9-bcb7-1cbc204a3566",
+      "name": "Send an Email1",
+      "webhookId": "aedb173d-b6b4-497d-b8de-c944db90e24c",
+      "credentials": {
+        "smtp": {
+          "id": "oNixi0XuuwzSgleE",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are a professional HR Manager.\n\nWrite a warm and professional job application acceptance email.\n\nCandidate Name:\n{{$('Webhook').item.json.body.candidateName}}\n\nPosition:\n{{$('Webhook').item.json.body.position}}\n\nScore:\n{{ JSON.parse($('Resume Analysis').item.json.output[0].content[0].text).score }}\n\nSummary:\n{{ JSON.parse($('Resume Analysis').item.json.output[0].content[0].text).summary }}\n\nInstructions:\n- Congratulate the candidate.\n- Inform them they have successfully passed the initial screening.\n- Mention that their qualifications impressed the recruitment team.\n- Inform them that they will soon receive details regarding the technical interview.\n- Maintain a professional and encouraging tone.\n- End with:\n\nBest Regards,\nHR Team\n\nReturn ONLY the email body."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        976,
+        -96
+      ],
+      "id": "244e311c-367d-455e-a790-51a4ed8d42f5",
+      "name": "accpeted",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are a professional HR Manager.\n\nWrite a polite and professional job application rejection email.\n\nCandidate Name:\n{{$('Webhook').item.json.body.candidateName}}\n\nPosition:\n{{$('Webhook').item.json.body.position}}\n\nScore:\n{{ JSON.parse($('Resume Analysis').item.json.output[0].content[0].text).score }}\n\nSummary:\n{{ JSON.parse($('Resume Analysis').item.json.output[0].content[0].text).summary }}\n\nInstructions:\n- Thank the candidate for applying.\n- Inform them they have not been selected for the next stage.\n- Mention that the decision was competitive.\n- Encourage them to apply again in the future.\n- Wish them success in their career.\n- Maintain a respectful and positive tone.\n- End with:\n\nBest Regards,\nHR Team\n\nReturn ONLY the email body."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        976,
+        96
+      ],
+      "id": "044ce22b-c1b1-479a-99ae-4dac181e85f6",
+      "name": "rejected",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Resume Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resume Analysis": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "accpeted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet1": {
+      "main": [
+        [
+          {
+            "node": "rejected",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "accpeted": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "rejected": {
+      "main": [
+        [
+          {
+            "node": "Send an Email1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "23449882-dec1-42a1-9976-7925e7faed28",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d197125ec9b9e4d79e1db1057491a9e406bdee512a7662986262bf6027de4d97"
+  },
+  "nodeGroups": [],
+  "id": "rhsZPbgWQTqklCLa",
+  "tags": []
+}

@@ -1,0 +1,178 @@
+{
+  "name": "AI Sales Email Generator",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3b68bc4b-ff4f-41c8-87f3-025c4b2e2107",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b2691b5a-31fe-4b39-8fbc-ecf5679f40f3",
+              "name": "customerName",
+              "value": "Ahmed Khan",
+              "type": "string"
+            },
+            {
+              "id": "ee3c4295-bc4c-409a-9b77-45eb4f462c19",
+              "name": "email",
+              "value": "ahmed@example.com",
+              "type": "string"
+            },
+            {
+              "id": "b2bc7a0f-989f-4ef2-838b-0fc1af81f693",
+              "name": "company",
+              "value": "Ahmed Electronics",
+              "type": "string"
+            },
+            {
+              "id": "808fe200-905d-46ca-bb9d-ac73dd0b8f73",
+              "name": "industry",
+              "value": "electronics retail",
+              "type": "string"
+            },
+            {
+              "id": "e8fc5b33-f1bc-491a-8681-e6c0be93c87b",
+              "name": "product",
+              "value": "AI customer support retail",
+              "type": "string"
+            },
+            {
+              "id": "93d32636-932c-4ccb-8d17-eb191ff0285f",
+              "name": "painPoint",
+              "value": "customer wait too long for replies and the loses potential sales",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "9ee2c3e0-be06-4635-ad9c-98a64dd901cf",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are an expert B2B sales copywriter.\n\nCreate a professional and personalized cold sales email.\n\nCustomer Name:\n{{$json.customerName}}\n\nCompany:\n{{$json.company}}\n\nIndustry:\n{{$json.industry}}\n\nProduct:\n{{$json.product}}\n\nCustomer Pain Point:\n{{$json.painPoint}}\n\nGenerate:\n\n--------------------------------\n\nSubject Line\n\nEmail Body\n\nCall To Action\n\n--------------------------------\n\nThe email should:\n\n• Be professional\n• Be friendly\n• Explain how the product solves the customer's problem\n• Encourage the customer to book a meeting\n\nReturn ONLY the final email."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "7c30a6f0-1ef8-4933-b528-a2530b41b9fd",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "jahanzaibaqeel6@gmail.com",
+        "toEmail": "jahanzaibaqeel6@gmail.com",
+        "subject": "=AI Solution for {{$('Edit Fields').item.json.company}}",
+        "emailFormat": "text",
+        "text": "={{$('Message a model').item.json.output[0].content[0].text}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        768,
+        0
+      ],
+      "id": "b08e7707-9641-4e62-9017-398f862829ad",
+      "name": "Send an Email",
+      "webhookId": "7e805024-9173-4bfc-9b1f-ed73604a15c4",
+      "credentials": {
+        "smtp": {
+          "id": "oNixi0XuuwzSgleE",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "6b5af913-daff-483b-a70e-0b461552465d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d197125ec9b9e4d79e1db1057491a9e406bdee512a7662986262bf6027de4d97"
+  },
+  "nodeGroups": [],
+  "id": "e24up6gXZxa1sivg",
+  "tags": []
+}

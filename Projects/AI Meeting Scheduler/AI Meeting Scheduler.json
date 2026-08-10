@@ -1,0 +1,178 @@
+{
+  "name": "AI Meeting Scheduler",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "207e9bb2-e694-4df6-bc2c-7312947f46aa",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a6f3dde2-3bde-4949-b53e-6e4ed29a849e",
+              "name": "customerName",
+              "value": "Ahmed Ali",
+              "type": "string"
+            },
+            {
+              "id": "3bae5aab-ff04-4560-9db9-3ef33ac0a39c",
+              "name": "email",
+              "value": "ali@example.com",
+              "type": "string"
+            },
+            {
+              "id": "335f6a5f-e002-403f-9f1d-9f98098f39af",
+              "name": "business",
+              "value": "Ali Clothing Store",
+              "type": "string"
+            },
+            {
+              "id": "77469eed-f873-4501-accf-df08ffddfe87",
+              "name": "service",
+              "value": "AI Chatbot Devlopment",
+              "type": "string"
+            },
+            {
+              "id": "eccba471-4982-4234-bad3-7d5ae4b620d8",
+              "name": "preffereddate",
+              "value": "friday",
+              "type": "string"
+            },
+            {
+              "id": "b318cc01-88c2-4b95-a0bf-1693b35d32f0",
+              "name": "prefferdtime",
+              "value": "3:00PM",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "8fee4b81-3392-4cdd-980b-96870706c2af",
+      "name": "Customer Info"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are a professional scheduling assistant.\n\nCreate a polite meeting confirmation email using the following information.\n\nCustomer Name:\n{{$json.customerName}}\n\nBusiness:\n{{$json.business}}\n\nService Requested:\n{{$json.service}}\n\nPreferred Meeting Date:\n{{$json.preffereddate}}\n\nPreferred Meeting Time:\n{{$json.prefferdtime}}\n\nWrite a professional email that:\n\n- Thanks the customer.\n- Confirms the requested meeting.\n- Mentions the date and time.\n- Says a meeting link will be shared before the meeting.\n- Ends professionally.\n\nReturn only the email body."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "d3a7e51b-7c71-4462-acf6-29c673eb9ac1",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "jahanzaibaqeel6@gmail.com",
+        "toEmail": "jahanzaibaqeel6@gmail.com",
+        "subject": "=Meeting Confirmation - {{$('Customer Info').item.json.service}}",
+        "emailFormat": "text",
+        "text": "={{$('Message a model').item.json.output[0].content[0].text}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        768,
+        0
+      ],
+      "id": "c10ba981-789c-4926-8557-ddb9a93eeeea",
+      "name": "Send an Email",
+      "webhookId": "97d4c93a-2048-48d8-a2d6-24cd764d05f2",
+      "credentials": {
+        "smtp": {
+          "id": "oNixi0XuuwzSgleE",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Customer Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Customer Info": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "27a4008a-105c-457b-aaf0-ae460db57a59",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d197125ec9b9e4d79e1db1057491a9e406bdee512a7662986262bf6027de4d97"
+  },
+  "nodeGroups": [],
+  "id": "8PJb1HULmn72pMVo",
+  "tags": []
+}

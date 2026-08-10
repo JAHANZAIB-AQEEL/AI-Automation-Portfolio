@@ -1,0 +1,576 @@
+{
+  "name": "AI Expense Approval Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "expense-approval",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "861d485b-5dd0-4910-be02-6c34f4a040df",
+      "name": "Webhook",
+      "webhookId": "4b93058e-3630-4118-a2ef-4d33fc44e01d"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "ddb24ba2-554e-40cf-ac6c-65fedd4f7253",
+              "leftValue": "={{ JSON.parse($json.output[0].content[0].text).decision }}",
+              "rightValue": "Approved",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        560,
+        0
+      ],
+      "id": "7845bc82-eb51-4353-bfab-3ae9591670fe",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1j1FBdmxVC0i2aTv9kz7s7RGLf3O88h-AM1APP6LK3ps",
+          "mode": "list",
+          "cachedResultName": "Expense Requests",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1j1FBdmxVC0i2aTv9kz7s7RGLf3O88h-AM1APP6LK3ps/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1j1FBdmxVC0i2aTv9kz7s7RGLf3O88h-AM1APP6LK3ps/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Employee": "={{$('Webhook').item.json.body.employeeName}}",
+            "Email": "={{$('Webhook').item.json.body.employeeEmail}}",
+            "Department": "={{$('Webhook').item.json.body.department}}",
+            "Expense Type": "={{$('Webhook').item.json.body.expenseType}}",
+            "Amount": "={{$('Webhook').item.json.body.amount}}",
+            "Decision": "={{ JSON.parse($('Expense Analysis').item.json.output[0].content[0].text).decision }}",
+            "Risk": "={{ JSON.parse($('Expense Analysis').item.json.output[0].content[0].text).risk }}",
+            "Summary ": "={{ JSON.parse($('Expense Analysis').item.json.output[0].content[0].text).summary }}",
+            "Date": "={{ $now.format('yyyy-MM-dd HH:mm:ss') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Employee",
+              "displayName": "Employee",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Department",
+              "displayName": "Department",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Expense Type",
+              "displayName": "Expense Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Amount",
+              "displayName": "Amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Decision",
+              "displayName": "Decision",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Risk",
+              "displayName": "Risk",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Summary ",
+              "displayName": "Summary ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        768,
+        -96
+      ],
+      "id": "871662fd-c4ed-4129-ae10-daeab2308c6f",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "iji0sD48N2HV39lS",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are a professional finance manager.\n\nWrite a professional expense approval email.\n\nEmployee:\n{{$('Webhook').item.json.body.employeeName}}\n\nExpense:\n{{$('Webhook').item.json.body.expenseType}}\n\nAmount:\n{{$('Webhook').item.json.body.amount}}\n\nReason:\n{{ JSON.parse($('Expense Analysis').item.json.output[0].content[0].text).summary }}\n\nReturn ONLY the email body."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        976,
+        -96
+      ],
+      "id": "f4620d61-9c9f-4276-a3d8-19f72182ed6b",
+      "name": "approval",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1j1FBdmxVC0i2aTv9kz7s7RGLf3O88h-AM1APP6LK3ps",
+          "mode": "list",
+          "cachedResultName": "Expense Requests",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1j1FBdmxVC0i2aTv9kz7s7RGLf3O88h-AM1APP6LK3ps/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1j1FBdmxVC0i2aTv9kz7s7RGLf3O88h-AM1APP6LK3ps/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Employee": "={{$('Webhook').item.json.body.employeeName}}",
+            "Email": "={{$('Webhook').item.json.body.employeeEmail}}",
+            "Department": "={{$('Webhook').item.json.body.department}}",
+            "Expense Type": "={{$('Webhook').item.json.body.expenseType}}",
+            "Amount": "={{$('Webhook').item.json.body.amount}}",
+            "Decision": "={{ JSON.parse($('Expense Analysis').item.json.output[0].content[0].text).decision }}",
+            "Risk": "={{ JSON.parse($('Expense Analysis').item.json.output[0].content[0].text).risk }}",
+            "Summary ": "={{ JSON.parse($('Expense Analysis').item.json.output[0].content[0].text).summary }}",
+            "Date": "={{ $now.format('yyyy-MM-dd HH:mm:ss') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Employee",
+              "displayName": "Employee",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Department",
+              "displayName": "Department",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Expense Type",
+              "displayName": "Expense Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Amount",
+              "displayName": "Amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Decision",
+              "displayName": "Decision",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Risk",
+              "displayName": "Risk",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Summary ",
+              "displayName": "Summary ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        768,
+        96
+      ],
+      "id": "4b136345-4f45-42df-ba1e-61cfd333b507",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "iji0sD48N2HV39lS",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are an experienced finance manager.\n\nAnalyze the following expense request.\n\nEmployee:\n{{$json.body.employeeName}}\n\nDepartment:\n{{$json.body.department}}\n\nExpense Type:\n{{$json.body.expenseType}}\n\nAmount:\n{{$json.body.amount}}\n\nReason:\n{{$json.body.reason}}\n\nReturn ONLY valid JSON.\n\n{\n  \"decision\":\"Approved\",\n  \"category\":\"Software\",\n  \"risk\":\"Low\",\n  \"summary\":\"Valid business expense.\"\n}\n\nRules:\n- Decision must be ONLY \"Approved\" or \"Rejected\".\n- Approve reasonable business expenses.\n- Reject unnecessary or personal expenses.\n- Return ONLY JSON.\n- No markdown."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "084b187e-2775-4fbc-831f-c49631e0cc3a",
+      "name": "Expense Analysis",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "jahanzaibaqeel6@gmail.com",
+        "toEmail": "jahanzaibaqeel6@gmail.com",
+        "subject": "Expense Request Approved",
+        "emailFormat": "text",
+        "text": "={{$('approval').item.json.output[0].content[0].text}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1280,
+        -96
+      ],
+      "id": "8746790f-81db-40f2-8be2-8f96e2fb9cf5",
+      "name": "Send an Email",
+      "webhookId": "ca84d082-830a-47d8-b948-3517fc288691",
+      "credentials": {
+        "smtp": {
+          "id": "oNixi0XuuwzSgleE",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are a professional finance manager.\n\nWrite a professional expense rejection email.\n\nEmployee:\n{{$('Webhook').item.json.body.employeeName}}\n\nExpense:\n{{$('Webhook').item.json.body.expenseType}}\n\nAmount:\n{{$('Webhook').item.json.body.amount}}\n\nReason:\n{{ JSON.parse($('Expense Analysis').item.json.output[0].content[0].text).summary }}\n\nSuggest submitting a revised business justification if appropriate.\n\nReturn ONLY the email body."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        976,
+        96
+      ],
+      "id": "7653ea94-cd0a-4340-96c8-6821d716a742",
+      "name": "rejected",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "jahanzaibaqeel6@gmail.com",
+        "toEmail": "jahanzaibaqeel6@gmail.com",
+        "subject": "Expense Request Update",
+        "emailFormat": "text",
+        "text": "={{$('rejected').item.json.output[0].content[0].text}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1280,
+        96
+      ],
+      "id": "c064daec-11b9-4e9c-96cb-ebf9cf65def2",
+      "name": "Send an Email1",
+      "webhookId": "78232226-faf6-40f5-9578-87417bb40db8",
+      "credentials": {
+        "smtp": {
+          "id": "oNixi0XuuwzSgleE",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Expense Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Expense Analysis": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet1": {
+      "main": [
+        [
+          {
+            "node": "rejected",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "approval": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "rejected": {
+      "main": [
+        [
+          {
+            "node": "Send an Email1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c6d42348-6d21-490d-a6d6-e196aa532cf4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d197125ec9b9e4d79e1db1057491a9e406bdee512a7662986262bf6027de4d97"
+  },
+  "nodeGroups": [],
+  "id": "JViBn9c53p5sA4aw",
+  "tags": []
+}

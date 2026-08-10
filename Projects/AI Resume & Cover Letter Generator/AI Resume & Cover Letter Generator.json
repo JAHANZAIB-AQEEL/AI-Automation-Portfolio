@@ -1,0 +1,177 @@
+{
+  "name": "AI Resume & Cover Letter Generator",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "cad27fec-3c62-4b68-a608-3b8310d33823",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a9d2b685-bd27-4a6c-b277-116833f0b166",
+              "name": "candidateName",
+              "value": "Ali Ahmed",
+              "type": "string"
+            },
+            {
+              "id": "0c7b40cb-a6bf-47af-8255-f26113da299f",
+              "name": "email",
+              "value": "ahmed@example.com",
+              "type": "string"
+            },
+            {
+              "id": "7a65ff8c-7e2a-4e62-b051-b269dad07151",
+              "name": "jobTitle",
+              "value": "cyber security intern",
+              "type": "string"
+            },
+            {
+              "id": "19c74276-a6da-4216-92b6-f7bc61b2430d",
+              "name": "skills",
+              "value": "Networking, Linux, Python, Cyber Security, AI Automation",
+              "type": "string"
+            },
+            {
+              "id": "74a9d3ad-c519-4af6-af2b-3aeeff80e4cc",
+              "name": "experience",
+              "value": "1 year internship in IT support and automation projects using n8n",
+              "type": "string"
+            },
+            {
+              "id": "ee3c9b4c-6cdc-47d3-b206-90aa4c6e5e1c",
+              "name": "education",
+              "value": "BS cybersecurity ",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "b092bea2-5173-42e5-be5c-5b8ab15817c3",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are an expert resume writer and career coach.\n\nCreate a professional resume summary and a personalized cover letter using the information below.\n\nCandidate Name:\n{{$json.candidateName}}\n\nJob Title:\n{{$json.jobTitle}}\n\nSkills:\n{{$json.skills}}\n\nExperience:\n{{$json.experience}}\n\nEducation:\n{{$json.education}}\n\nCreate the following:\n\n--------------------------------\n\nPROFESSIONAL SUMMARY\n\nWrite a concise and impactful professional summary.\n\n--------------------------------\n\nCOVER LETTER\n\nWrite a professional cover letter addressed to the Hiring Manager.\n\nInclude:\n\n• Introduction\n• Skills and experience\n• Why the candidate is suitable\n• Professional closing\n\n--------------------------------\n\nReturn ONLY the final resume summary and cover letter."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "34b693e1-97b2-4c85-bcd9-fa96101c2700",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "jahanzaibaqeel6@gmail.com",
+        "toEmail": "jahanzaibaqeel6@gmail.com",
+        "subject": "=Resume & Cover Letter - {{$('Edit Fields').item.json.candidateName}}",
+        "emailFormat": "={{$('Message a model').item.json.output[0].content[0].text}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        768,
+        0
+      ],
+      "id": "ec69fa8e-378e-4af2-ac7a-7ea6cabb1dde",
+      "name": "Send an Email",
+      "webhookId": "4ac33763-17a3-4777-9eff-8f5643a4977a",
+      "credentials": {
+        "smtp": {
+          "id": "oNixi0XuuwzSgleE",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "62ea5934-7ade-45a7-8b99-2b05d5dd300e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d197125ec9b9e4d79e1db1057491a9e406bdee512a7662986262bf6027de4d97"
+  },
+  "nodeGroups": [],
+  "id": "wxP9xApfmwMo9vyz",
+  "tags": []
+}
