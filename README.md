@@ -98,51 +98,67 @@ The projects in this repository are portfolio implementations designed to demons
 
 # 📂 Portfolio Projects
 
-The portfolio contains 20 documented automation projects organized around different business use cases.
+This portfolio contains **20 documented AI automation projects** covering business intelligence, CRM, sales, HR, customer support, finance, productivity, marketing, and document automation.
+
+---
 
 ## 📊 Business Intelligence
 
-- [Enterprise AI Operations Dashboard](./Projects/Enterprise%20AI%20Operations%20Dashboard/)
-- [AI Executive Business Reporting System](./Projects/AI%20Executive%20Business%20Reporting%20System/)
-- [AI Multi-Agent Business Assistant](./Projects/AI%20Multi-Agent%20Business%20Assistant/)
+- [Enterprise AI Operations Dashboard](./Projects/Enterprise-AI-Operations-Dashboard/)
+- [AI Executive Business Reporting System](./Projects/AI-Executive-Business-Reporting-System/)
+- [AI Multi-Agent Business Assistant](./Projects/AI-Multi-Agent-Business-Assistant/)
+
+---
 
 ## 💼 Sales & CRM
 
-- [AI CRM Assistant](./Projects/AI%20CRM%20Assistant/)
-- [AI Lead Capture & Google Sheets CRM](./Projects/AI%20Lead%20Capture%20%26%20Google%20Sheets%20CRM/)
-- [AI Sales Email Generator](./Projects/AI%20Sales%20Email%20Generator/)
-- [AI Website Contact Form Automation](./Projects/AI%20Website%20Contact%20Form%20Automation/)
+- [AI CRM Assistant](./Projects/AI-CRM-Assistant/)
+- [AI Lead Capture & Google Sheets CRM](./Projects/AI-Lead-Capture-%26-Google-Sheets-CRM/)
+- [AI Sales Email Generator](./Projects/AI-Sales-Email-Generator/)
+- [AI Website Contact Form Automation](./Projects/AI-Website-Contact-Form-Automation/)
+
+---
 
 ## 👥 Human Resources
 
-- [AI Resume Screening System](./Projects/AI%20Resume%20Screening%20System/)
-- [AI Resume & Cover Letter Generator](./Projects/AI%20Resume%20%26%20Cover%20Letter%20Generator/)
+- [AI Resume Screening System](./Projects/AI-Resume-Screening-System/)
+- [AI Resume & Cover Letter Generator](./Projects/AI-Resume-%26-Cover-Letter-Generator/)
+
+---
 
 ## 🎫 Customer Support
 
-- [AI Customer Onboarding Automation](./Projects/AI%20Customer%20Onboarding%20Automation/)
-- [AI Support Ticket Management System](./Projects/AI%20Support%20Ticket%20Management%20System/)
-- [AI Customer Support Ticket Classifier](./Projects/AI%20Customer%20Support%20Ticket%20Classifier/)
+- [AI Customer Onboarding Automation](./Projects/AI-Customer-Onboarding-Automation/)
+- [AI Support Ticket Management System](./Projects/AI-Support-Ticket-Management-System/)
+- [AI Customer Support Ticket Classifier](./Projects/AI-Customer-Support-Ticket-Classifier/)
+
+---
 
 ## 💰 Finance
 
-- [AI Expense Approval Workflow](./Projects/AI%20Expense%20Approval%20Workflow/)
-- [AI Invoice Generator](./Projects/AI%20Invoice%20Generator/)
+- [AI Expense Approval Workflow](./Projects/AI-Expense-Approval-Workflow/)
+- [AI Invoice Generator](./Projects/AI-Invoice-Generator/)
+
+---
 
 ## 📄 Documents & Legal
 
-- [AI Contract & Document Analyzer](./Projects/AI%20Contract%20%26%20Document%20Analyzer/)
-- [AI Proposal Generator](./Projects/AI%20Proposal%20Generator/)
+- [AI Contract Analysis Database](./Projects/AI-Contract-Analysis-Database/)
+- [AI Proposal Generator](./Projects/AI-Proposal-Generator/)
+
+---
 
 ## 📅 Scheduling & Productivity
 
-- [AI Appointment Booking System](./Projects/AI%20Appointment%20Booking%20System/)
-- [AI Meeting Scheduler](./Projects/AI%20Meeting%20Scheduler/)
-- [AI Meeting Minutes Generator](./Projects/AI%20Meeting%20Minutes%20Generator/)
+- [AI Appointment Booking System](./Projects/AI-Appointment-Booking-System/)
+- [AI Meeting Scheduler](./Projects/AI-Meeting-Scheduler/)
+- [AI Meeting Minutes Generator](./Projects/AI-Meeting-Minutes-Generator/)
+
+---
 
 ## 📱 Marketing
 
-- [AI Social Media Content Generator](./Projects/AI%20Social%20Media%20Content%20Generator/)
+- [AI Social Media Content Generator](./Projects/AI-Social-Media-Content-Generator/)
 
 ---
 
@@ -154,37 +170,37 @@ A few examples of the business problems represented in the portfolio:
 
 An AI assistant concept designed around multiple specialized agents for handling different business tasks.
 
-[View Project →](./Projects/AI%20Multi-Agent%20Business%20Assistant/)
+[View Project →](./Projects/AI-Multi-Agent-Business-Assistant/)
 
 ### 📊 AI Executive Business Reporting System
 
 An automation workflow focused on turning business information into structured executive reporting.
 
-[View Project →](./Projects/AI%20Executive%20Business%20Reporting%20System/)
+[View Project →](./Projects/AI-Executive-Business-Reporting-System/)
 
-### 📄 AI Contract & Document Analyzer
+### 📄 AI Contract Analysis Database
 
 An AI-powered document workflow designed to analyze business documents and extract useful information.
 
-[View Project →](./Projects/AI%20Contract%20%26%20Document%20Analyzer/)
+[View Project →](./Projects/AI-Contract-Analysis-Database/)
 
 ### 🤖 AI CRM Assistant
 
 An automation concept for organizing customer relationship tasks and reducing repetitive CRM work.
 
-[View Project →](./Projects/AI%20CRM%20Assistant/)
+[View Project →](./Projects/AI-CRM-Assistant/)
 
 ### 📅 AI Appointment Booking System
 
 An automated appointment scheduling workflow designed to streamline booking-related processes.
 
-[View Project →](./Projects/AI%20Appointment%20Booking%20System/)
+[View Project →](./Projects/AI-Appointment-Booking-System/)
 
 ### 💰 AI Invoice Generator
 
 An automation workflow for generating structured invoices from business information.
 
-[View Project →](./Projects/AI%20Invoice%20Generator/)
+[View Project →](./Projects/AI-Invoice-Generator/)
 
 ---
 
