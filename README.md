@@ -280,41 +280,50 @@ These projects are presented as portfolio implementations and are not presented 
 
 ---
 
-# 🗂 Repository Structure
+# 📁 Repository Structure
+
+The repository is organized into **20 self-contained AI automation projects**.
 
 ```text
 AI-Automation-Portfolio/
 │
-├── Assets/
-│
-├── Documentation/
-│
 ├── Projects/
-│   ├── AI Appointment Booking System/
-│   ├── AI CRM Assistant/
-│   ├── AI Contract & Document Analyzer/
-│   ├── AI Customer Onboarding Automation/
-│   ├── AI Customer Support Ticket Classifier/
-│   ├── AI Expense Approval Workflow/
-│   ├── AI Invoice Generator/
-│   ├── AI Lead Capture & Google Sheets CRM/
-│   ├── AI Meeting Minutes Generator/
-│   ├── AI Meeting Scheduler/
-│   ├── AI Proposal Generator/
-│   ├── AI Resume & Cover Letter Generator/
-│   ├── AI Resume Screening System/
-│   ├── AI Sales Email Generator/
-│   ├── AI Social Media Content Generator/
-│   ├── AI Support Ticket Management System/
-│   ├── AI Website Contact Form Automation/
-│   └── ...
+│   │
+│   ├── Enterprise-AI-Operations-Dashboard/
+│   │   ├── README.md
+│   │   ├── workflow.json
+│   │   └── screenshots/
+│   │
+│   ├── AI-Executive-Business-Reporting-System/
+│   │   ├── README.md
+│   │   ├── workflow.json
+│   │   └── screenshots/
+│   │
+│   ├── AI-Multi-Agent-Business-Assistant/
+│   │   ├── README.md
+│   │   ├── workflow.json
+│   │   └── screenshots/
+│   │
+│   ├── AI-Contract-Analysis-Database/
+│   ├── AI-Social-Media-Content-Generator/
+│   ├── AI-Customer-Onboarding-Automation/
+│   ├── AI-Expense-Approval-Workflow/
+│   ├── AI-Meeting-Minutes-Generator/
+│   ├── AI-Resume-Screening-System/
+│   ├── AI-Support-Ticket-Management-System/
+│   ├── AI-Appointment-Booking-System/
+│   ├── AI-Lead-Capture-&-Google-Sheets-CRM/
+│   ├── AI-Website-Contact-Form-Automation/
+│   ├── AI-Sales-Email-Generator/
+│   ├── AI-Resume-&-Cover-Letter-Generator/
+│   ├── AI-Customer-Support-Ticket-Classifier/
+│   ├── AI-CRM-Assistant/
+│   ├── AI-Invoice-Generator/
+│   ├── AI-Meeting-Scheduler/
+│   └── AI-Proposal-Generator/
 │
-├── Screenshots/
-│
-├── Workflow_JSON/
-│
+├── .gitignore
 ├── LICENSE
-│
 └── README.md
 ```
 
